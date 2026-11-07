@@ -76,23 +76,14 @@ class PeminjamanController extends Controller
 
     /**
      * Menampilkan detail peminjaman.
+     *
+     * SOAL 1 - A4 (SENGAJA RENTAN: IDOR)
+     * Data diambil langsung dari $id tanpa memeriksa pemilik.
+     * Pemeriksaan kepemilikan manual dari Modul 5 sengaja dihapus.
      */
     public function show($id)
     {
-        $peminjaman = Peminjaman::with(['anggota', 'buku'])
-            ->findOrFail($id);
-
-        // Siswa hanya boleh melihat peminjaman miliknya sendiri.
-        if (auth()->user()->hasRole('siswa')) {
-            $anggota = auth()->user()->anggota;
-
-            if (
-                !$anggota ||
-                $peminjaman->anggota_id != $anggota->id
-            ) {
-                abort(403, 'Kamu tidak memiliki akses ke peminjaman ini.');
-            }
-        }
+        $peminjaman = Peminjaman::findOrFail($id);
 
         return view('peminjaman.show', compact('peminjaman'));
     }
