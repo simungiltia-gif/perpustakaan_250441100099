@@ -23,6 +23,36 @@ class User extends Authenticatable
         return $this->hasOne(Anggota::class, 'user_id');
     }
 
+    /**
+     * Ambil data anggota milik user ini. Jika belum ada, hubungkan dengan
+     * data anggota lama (yang emailnya sama dan belum punya akun) atau buat baru.
+     */
+    public function anggotaOrCreate(): Anggota
+    {
+        $anggota = $this->anggota;
+
+        if ($anggota) {
+            return $anggota;
+        }
+
+        $anggota = Anggota::whereNull('user_id')->where('email', $this->email)->first();
+
+        if ($anggota) {
+            $anggota->update(['user_id' => $this->id]);
+        } else {
+            $anggota = Anggota::create([
+                'user_id'    => $this->id,
+                'nama'       => $this->name,
+                'email'      => $this->email,
+                'no_telepon' => '',
+            ]);
+        }
+
+        $this->setRelation('anggota', $anggota);
+
+        return $anggota;
+    }
+
     protected function casts(): array
     {
         return [
