@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Peminjaman;
 use App\Models\Buku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class PeminjamanController extends Controller
 {
@@ -77,13 +78,14 @@ class PeminjamanController extends Controller
     /**
      * Menampilkan detail peminjaman.
      *
-     * SOAL 1 - A4 (SENGAJA RENTAN: IDOR)
-     * Data diambil langsung dari $id tanpa memeriksa pemilik.
-     * Pemeriksaan kepemilikan manual dari Modul 5 sengaja dihapus.
+     * SOAL 4: akses diperiksa lewat PeminjamanPolicy::view().
+     * Pemeriksaan kepemilikan manual dari Modul 5 diganti dengan Policy.
      */
     public function show($id)
     {
-        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman = Peminjaman::with(['anggota', 'buku'])->findOrFail($id);
+
+        Gate::authorize('view', $peminjaman);
 
         return view('peminjaman.show', compact('peminjaman'));
     }
