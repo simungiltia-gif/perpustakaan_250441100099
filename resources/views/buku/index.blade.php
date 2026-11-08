@@ -41,8 +41,8 @@
                     <tr>
                         <td class="border px-4 py-3">{{ $buku->kategori->nama ?? '-' }}</td>
 
-                        {{-- SOAL 1 - A1 (SENGAJA RENTAN: XSS) --}}
-                        <td class="border px-4 py-3">{!! $buku->judul !!}</td>
+                        {{-- SOAL 2(a): {{ }} melakukan escaping HTML --}}
+                        <td class="border px-4 py-3">{{ $buku->judul }}</td>
 
                         <td class="border px-4 py-3">{{ $buku->penulis }}</td>
                         <td class="border px-4 py-3">{{ $buku->tahun_terbit }}</td>
@@ -55,11 +55,14 @@
                                     <a href="{{ route('buku.edit', $buku) }}" style="background-color:#d97706;color:#fff;"
                                        class="rounded px-3 py-1 text-sm font-semibold">Ubah</a>
 
-                                    {{-- SOAL 1 - A3 (SENGAJA RENTAN: CSRF) --}}
-                                    <a href="{{ route('buku.hapus', $buku) }}"
-                                       onclick="return confirm('Yakin ingin menghapus buku ini?')"
-                                       style="background-color:#dc2626;color:#fff;"
-                                       class="rounded px-3 py-1 text-sm font-semibold">Hapus</a>
+                                    {{-- SOAL 2(c): hapus lewat form DELETE + token CSRF --}}
+                                    <form method="POST" action="{{ route('buku.destroy', $buku) }}"
+                                          onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" style="background-color:#dc2626;color:#fff;"
+                                                class="rounded px-3 py-1 text-sm font-semibold">Hapus</button>
+                                    </form>
                                 @else
                                     <form method="POST" action="{{ route('peminjaman.ajukan') }}">
                                         @csrf

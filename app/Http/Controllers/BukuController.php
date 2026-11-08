@@ -52,10 +52,12 @@ class BukuController extends Controller
     }
 
     // A2 (SENGAJA RENTAN): judul digabung langsung ke SQL
-    public function cari(Request $request)
-    {
-        $judul = $request->query('judul');
-        $hasil = DB::select("SELECT * FROM bukus WHERE judul = '$judul'");
-        return response()->json($hasil);
-    }
+   public function cari(Request $request)
+{
+    $judul = $request->query('judul');
+
+    $hasil = DB::select('SELECT * FROM bukus WHERE judul = ?', [$judul]);
+
+    return response()->json($hasil);
+}
 }

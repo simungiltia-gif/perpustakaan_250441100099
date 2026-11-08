@@ -68,10 +68,11 @@ Route::middleware(['auth'])->group(function () {
             ->whereNumber('buku')
             ->name('buku.update');
 
-        // SOAL 1 - A3 (SENGAJA RENTAN: CSRF) - hapus lewat GET
-        Route::get('/buku/{buku}/hapus', [BukuController::class, 'destroy'])
+        // SOAL 2(c): hapus memakai method DELETE (dilindungi token CSRF).
+        // Route GET /buku/{buku}/hapus sudah dihapus.
+        Route::delete('/buku/{buku}', [BukuController::class, 'destroy'])
             ->whereNumber('buku')
-            ->name('buku.hapus');
+            ->name('buku.destroy');
 
     });
 
@@ -82,7 +83,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('buku.show');
 
 
-    // SOAL 1 - A2 (SENGAJA RENTAN: SQL Injection)
+    // SOAL 2(b): pencarian judul (query sudah memakai binding di controller)
     Route::get('/buku-cari', [BukuController::class, 'cari'])
         ->name('buku.cari');
 
@@ -92,7 +93,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('peminjaman.ajukan');
 
 
-    // SOAL 1 - A4 (SENGAJA RENTAN: IDOR) - hanya middleware auth
+    // A4 masih rentan sampai Soal 4 (hanya middleware auth)
     Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])
         ->whereNumber('id')
         ->name('peminjaman.show');
