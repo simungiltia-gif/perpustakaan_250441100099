@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class RoleAndPermissionSeeder extends Seeder
 {
@@ -97,11 +98,21 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
 
         // 6. Buat akun Admin
-        $admin = User::firstOrCreate(
+        // SOAL 5(c): password bawaan lama tidak dipakai lagi. Password diambil dari
+        // SEED_ADMIN_PASSWORD di .env; bila kosong dibuat acak dan ditampilkan sekali.
+        // updateOrCreate dipakai agar akun admin yang sudah ada ikut diganti passwordnya.
+        $adminPassword = env('SEED_ADMIN_PASSWORD');
+
+        if (empty($adminPassword)) {
+            $adminPassword = Str::password(16);
+            $this->command?->warn("SEED_ADMIN_PASSWORD kosong. Password admin baru: {$adminPassword}");
+        }
+
+        $admin = User::updateOrCreate(
             ['email' => 'admin@gmail.com'],
             [
                 'name' => 'Admin Perpustakaan',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make($adminPassword),
             ]
         );
 
