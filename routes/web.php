@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Pengelolaan buku (tambah, ubah, hapus).
     // Harus didaftarkan SEBELUM /buku/{id} agar /buku/create tidak tertangkap oleh {id}.
-    Route::middleware(['permission:kelola data buku'])->group(function () {
+    Route::middleware(['can:kelola-buku'])->group(function () {
 
         Route::get('/buku/create', [BukuController::class, 'create'])
             ->name('buku.create');

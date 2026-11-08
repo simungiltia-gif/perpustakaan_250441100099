@@ -3,19 +3,15 @@
 @section('title', 'Daftar Buku - Perpustakaan Digital')
 
 @section('content')
-@php
-    $bolehKelola = auth()->user()->hasAnyRole(['admin', 'petugas']);
-@endphp
-
 <div class="max-w-7xl mx-auto px-4 py-8">
 
     <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 class="text-2xl font-bold text-gray-800">Data Buku Perpustakaan Digital</h1>
 
-        @if ($bolehKelola)
+        @can('kelola-buku')
             <a href="{{ route('buku.create') }}" style="background-color:#3852B4;color:#fff;"
                class="rounded-lg px-4 py-2 font-semibold hover:opacity-90">+ Tambah Buku</a>
-        @endif
+        @endcan
     </div>
 
     @if (session('success'))
@@ -40,10 +36,7 @@
                 @forelse ($bukus as $buku)
                     <tr>
                         <td class="border px-4 py-3">{{ $buku->kategori->nama ?? '-' }}</td>
-
-                        {{-- SOAL 2(a): {{ }} melakukan escaping HTML --}}
                         <td class="border px-4 py-3">{{ $buku->judul }}</td>
-
                         <td class="border px-4 py-3">{{ $buku->penulis }}</td>
                         <td class="border px-4 py-3">{{ $buku->tahun_terbit }}</td>
                         <td class="border px-4 py-3">
@@ -51,11 +44,10 @@
                                 <a href="{{ route('buku.show', $buku->id) }}" style="background-color:#0891b2;color:#fff;"
                                    class="rounded px-3 py-1 text-sm font-semibold">Detail</a>
 
-                                @if ($bolehKelola)
+                                @can('kelola-buku')
                                     <a href="{{ route('buku.edit', $buku) }}" style="background-color:#d97706;color:#fff;"
                                        class="rounded px-3 py-1 text-sm font-semibold">Ubah</a>
 
-                                    {{-- SOAL 2(c): hapus lewat form DELETE + token CSRF --}}
                                     <form method="POST" action="{{ route('buku.destroy', $buku) }}"
                                           onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
                                         @csrf
@@ -70,7 +62,7 @@
                                         <button type="submit" style="background-color:#16a34a;color:#fff;"
                                                 class="rounded px-3 py-1 text-sm font-semibold">Pinjam</button>
                                     </form>
-                                @endif
+                                @endcan
                             </div>
                         </td>
                     </tr>
