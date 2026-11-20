@@ -15,6 +15,5 @@
 /storage/framework/sessions
 /storage/framework/views
 *.log
-/perpustakaan_250441100099
 /public/index.php
 /public/.htaccess
