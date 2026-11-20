@@ -15,5 +15,6 @@
 /storage/framework/sessions
 /storage/framework/views
 *.log
+*.md
 /public/index.php
 /public/.htaccess
